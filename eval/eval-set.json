@@ -1,0 +1,77 @@
+[
+  {
+    "id": "direct-fact",
+    "category": "direct factual",
+    "question": "What is the casual leave carry-forward limit?",
+    "expect": {
+      "refused": false,
+      "answerIncludes": ["8"],
+      "citationSectionIncludes": ["carry-forward"]
+    }
+  },
+  {
+    "id": "multi-fact",
+    "category": "retrieval-dependent / multi-section",
+    "question": "How many days of casual, sick, and privilege leave per year, and which can be carried forward?",
+    "expect": {
+      "refused": false,
+      "answerIncludes": ["12", "10", "18"],
+      "citationSectionIncludes": ["Casual", "Sick", "Privilege"]
+    }
+  },
+  {
+   "id": "table-tier",
+   "category": "table / structured",
+   "question": "Does the Standard health tier cover dental implants?",
+   "expect": {
+     "refused": false,
+     "answerIncludes": ["not covered"],
+     "citationSectionIncludes": ["health coverage tiers"]
+    }
+  },
+  {
+  "id": "lta-table",
+  "category": "table / structured",
+  "question": "What is the annual LTA limit for Band C?",
+  "expect": {
+    "refused": false,
+    "answerIncludes": ["75,000"],
+    "citationSectionIncludes": ["leave travel"]
+  }
+},
+{
+  "id": "gym-reimbursement",
+  "category": "explicit negative (not a refusal)",
+  "question": "Can I get reimbursed for home gym equipment?",
+  "expect": {
+    "refused": false,
+    "answerIncludes": ["not"],
+    "citationSectionIncludes": ["wellness"]
+  }
+}
+,
+  {
+    "id": "absent-fact",
+    "category": "answer absent from policies",
+    "question": "What is the company stock option vesting schedule?",
+    "expect": { "refused": true }
+  },
+  {
+    "id": "off-topic",
+    "category": "unrelated / off-topic",
+    "question": "What is the capital of France?",
+    "expect": { "refused": true }
+  },
+  {
+    "id": "empty",
+    "category": "empty question",
+    "question": "",
+    "expect": { "error": true }
+  },
+  {
+  "id": "ambiguous",
+  "category": "ambiguous / broad",
+  "question": "How much leave do I get?",
+  "expect": { "refused": false, "citationSectionIncludes": ["leave"] }
+}
+]

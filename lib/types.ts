@@ -4,6 +4,10 @@ export interface ParsedSection {
   text: string;     
 }
 
+export interface LLMProvider {
+  // Returns the raw text the model generated (expected to be JSON).
+  generate(system: string, user: string): Promise<string>;
+}
 export interface ParsedDocument {
   documentName: string;     
   sections: ParsedSection[]; 

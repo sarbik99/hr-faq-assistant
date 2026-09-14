@@ -1,13 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { parseDocument } from "@/lib/parse";
-import { chunkDocument } from "@/lib/chunk";    
-import { embedChunks } from "@/lib/embed";      
-import { IngestionError } from "@/lib/types";
+import { chunkDocument } from "@/lib/chunk";
+import { embedChunks } from "@/lib/embed";
 import { addChunks } from "@/lib/store";
+import { IngestionError } from "@/lib/types";
 
+// POST /documents  (multipart/form-data, field "file")
+// Response 200: { documentName, sectionCount, chunkCount, message }
+// Response 400: { error, code? }   Response 500: { error }
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
+    let formData: FormData;
+    try {
+      formData = await req.formData();
+    } catch {
+      return NextResponse.json(
+        { error: "Expected multipart/form-data with a 'file' field." },
+        { status: 400 }
+      );
+    }
+
     const file = formData.get("file");
     if (!(file instanceof File)) {
       return NextResponse.json({ error: "No file uploaded." }, { status: 400 });
@@ -20,25 +32,18 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "File could not be read." }, { status: 400 });
     }
 
+    // parse -> chunk -> embed -> index
     const parsed = parseDocument(file.name, rawContent);
-
     const chunks = chunkDocument(parsed);
     const embedded = await embedChunks(chunks);
-    await addChunks(embedded); // persist into the vector index
+    await addChunks(embedded);
 
-return NextResponse.json({
-  documentName: parsed.documentName,
-  sectionCount: parsed.sections.length,
-  chunkCount: embedded.length,
-  chunks: embedded.map((c) => ({
-        chunkId: c.metadata.chunkId,
-        section: c.metadata.section,
-        preview: c.text.slice(0, 100),
-        vectorLength: c.vector.length,        // should be 384
-        vectorSample: c.vector.slice(0, 5),   // first 5 numbers, just to see it's real
-      })),
-  message: `Indexed ${embedded.length} chunks.`,
-});
+    return NextResponse.json({
+      documentName: parsed.documentName,
+      sectionCount: parsed.sections.length,
+      chunkCount: embedded.length,
+      message: `Indexed ${embedded.length} chunks from "${parsed.documentName}".`,
+    });
   } catch (err) {
     if (err instanceof IngestionError) {
       return NextResponse.json({ error: err.message, code: err.code }, { status: 400 });

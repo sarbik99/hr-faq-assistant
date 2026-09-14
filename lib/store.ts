@@ -29,6 +29,11 @@ async function persist(): Promise<void> {
 //Add newly embedded chunks to the index and persist to disk.
 export async function addChunks(chunks: EmbeddedChunk[]): Promise<void> {
   await ensureLoaded();
+  if (chunks.length > 0) {
+    const docName = chunks[0].metadata.documentName;
+    // Remove existing chunks from this document -> re-upload = re-index, not duplicate.
+    index = index.filter((c) => c.metadata.documentName !== docName);
+  }
   index.push(...chunks);
   await persist();
 }
