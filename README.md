@@ -13,6 +13,13 @@ The assistant:
 
 ---
 
+## Demo
+
+🎥 **[Watch the 3–5 minute demo on YouTube](https://youtu.be/wCxZvqCK1DY)**
+
+The demo shows the application workflow, including policy upload, question answering with citations, and refusal when the required information is not present in the uploaded policies.
+
+
 ## How It Works
 
 ### Document ingestion
@@ -72,7 +79,7 @@ The embedding model is downloaded automatically on first use and then cached loc
 
 ---
 
-## Installation
+## Installation and Setup
 
 ```bash
 git clone https://github.com/sarbik99/hr-faq-assistant
@@ -80,13 +87,14 @@ cd hr-faq-assistant
 npm install
 ```
 
-Create your environment file:
+```
+Create your own .env file in the project root
 
-```bash
-cp .env.example .env
+copy paste the .env.example in your .env
+and make sure to add a valid gemini api key
+if using the gemini model (recommended)
 ```
 
----
 
 ## Configuration
 
@@ -145,7 +153,7 @@ It produces **384-dimensional vectors** and runs locally after the model is down
 The final answer can be generated using:
 
 * **Ollama** — `qwen2.5:7b`
-* **Gemini** — `gemini-flash-latest`
+* **Gemini** — `gemini-3.1-flash-lite`
 
 The LLM provider is configurable, so the rest of the RAG pipeline does not depend on a specific provider.
 
